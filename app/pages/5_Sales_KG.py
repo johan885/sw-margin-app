@@ -4,7 +4,7 @@ import pandas as pd
 st.title("Sales in KG Calculator")
 
 st.write(
-    "Upload Order file and Master Cost Workbook to calculate kg sold per product."
+    "Upload Order file and Master Cost Workbook to calculate units sold and kg sold per product."
 )
 
 orders_file = st.file_uploader("Upload Order File (CSV)", type=["csv"])
@@ -51,35 +51,48 @@ if orders_file and cost_file:
             merged["Lineitem quantity"] * merged["weight"] / 1000
         )
 
+        merged["display_name"] = merged["name"].fillna("").str.strip()
+        merged.loc[merged["display_name"] == "", "display_name"] = merged["Lineitem name"]
+
         result = (
-            merged.groupby(["Lineitem sku", "name"], dropna=False)["kg_sold"]
-            .sum()
+            merged.groupby(["display_name", "Lineitem sku"], dropna=False)
+            .agg(
+                units_sold=("Lineitem quantity", "sum"),
+                kg_sold=("kg_sold", "sum")
+            )
             .reset_index()
         )
 
+        result["units_sold"] = result["units_sold"].round(0).astype(int)
         result["kg_sold"] = result["kg_sold"].round(3)
 
         result = result.rename(
             columns={
-                "Lineitem sku": "SKU",
-                "name": "Product name"
+                "display_name": "Product name",
+                "Lineitem sku": "SKU"
             }
         )
 
         result = result.sort_values("kg_sold", ascending=False)
 
-        st.subheader("KG Sold per Product")
+        st.subheader("Sales per Product")
         st.dataframe(result, use_container_width=True)
 
-        total = result["kg_sold"].sum()
-        st.metric("Total KG Sold", round(total, 2))
+        total_units = int(result["units_sold"].sum())
+        total_kg = round(result["kg_sold"].sum(), 2)
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Total Units Sold", total_units)
+        with col2:
+            st.metric("Total KG Sold", total_kg)
 
         missing_matches = merged[merged["weight"].isna() | (merged["weight"] == 0)][
             ["Lineitem sku", "Lineitem name"]
         ].drop_duplicates()
 
         if len(missing_matches) > 0:
-            st.warning("Some SKUs were not found in the Master Cost Workbook.")
+            st.warning("Some SKUs were not found in the Master Cost Workbook or have zero weight.")
             st.dataframe(missing_matches, use_container_width=True)
 
         csv = result.to_csv(index=False).encode("utf-8")
