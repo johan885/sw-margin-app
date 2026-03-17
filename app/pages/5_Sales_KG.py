@@ -55,7 +55,7 @@ if orders_file and cost_file:
         merged.loc[merged["display_name"] == "", "display_name"] = merged["Lineitem name"]
 
         result = (
-            merged.groupby(["display_name", "Lineitem sku"], dropna=False)
+            merged.groupby(["display_name"], dropna=False)
             .agg(
                 units_sold=("Lineitem quantity", "sum"),
                 kg_sold=("kg_sold", "sum")
@@ -68,11 +68,10 @@ if orders_file and cost_file:
 
         result = result.rename(
             columns={
-                "display_name": "Product name",
-                "Lineitem sku": "SKU"
+                "display_name": "Product name"
             }
         )
-
+        result = result[["Product name", "kg_sold", "units_sold"]]
         result = result.sort_values("kg_sold", ascending=False)
 
         st.subheader("Sales per Product")
