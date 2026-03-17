@@ -94,7 +94,7 @@ if orders_file and cost_file:
             st.warning("Some SKUs were not found in the Master Cost Workbook or have zero weight.")
             st.dataframe(missing_matches, use_container_width=True)
 
-        csv = result.to_csv(index=False).encode("utf-8")
+        csv = result.to_csv(index=False, sep=";", decimal=",").encode("utf-8")
 
         st.download_button(
             "Download CSV",
