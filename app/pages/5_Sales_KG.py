@@ -96,10 +96,23 @@ if orders_file and cost_file:
 
         csv = result.to_csv(index=False, sep=";", decimal=",").encode("utf-8")
 
+        # US format (best for copy/paste)
+        csv_us = result.to_csv(index=False).encode("utf-8")
+
         st.download_button(
-            "Download CSV",
-            csv,
-            "sales_kg.csv",
+         "Download CSV (US format)",
+            csv_us,
+            "sales_kg_us.csv",
+            "text/csv"
+        )
+
+        # EU format (best for Excel open)
+        csv_eu = result.to_csv(index=False, sep=";", decimal=",").encode("utf-8")
+
+        st.download_button(
+            "Download CSV (Excel EU format)",
+            csv_eu,
+            "sales_kg_eu.csv",
             "text/csv"
         )
 
