@@ -40,6 +40,10 @@ if orders_file and cost_file:
         costs["weight"] = pd.to_numeric(costs["weight"], errors="coerce").fillna(0)
         costs["name"] = costs["name"].astype(str).str.strip()
 
+        # Keep only one row per SKU before merging
+        costs = costs.sort_values(["sku"]).drop_duplicates(subset=["sku"], keep="first")
+
+
         merged = orders.merge(
             costs[["sku", "weight", "name"]],
             left_on="Lineitem sku",
