@@ -67,9 +67,9 @@ class Costs:
     meta: Dict[str, str]
 
 
-def load_costs_workbook(xlsx_bytes: bytes) -> Costs:
+def load_costs_workbook(file_obj) -> Costs:
     # Read all sheets
-    sheets = pd.read_excel(xlsx_bytes, sheet_name=None, engine="openpyxl")
+    sheets = pd.read_excel(file_obj, sheet_name=None, engine="openpyxl")
     if not sheets:
         raise ValueError("No sheets found in the cost workbook.")
 

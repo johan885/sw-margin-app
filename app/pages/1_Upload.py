@@ -44,7 +44,7 @@ if mode == "Upload CSVs":
             st.stop()
 
         with st.spinner("Loading cost workbook…"):
-            costs = load_costs_workbook(costs_file.getvalue())
+            costs = load_costs_workbook(costs_file)
 
         with st.spinner("Reading revenue + orders…"):
             rev = compute_revenue_orders(sales_file.getvalue())
