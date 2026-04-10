@@ -26,7 +26,10 @@ def _shopify_post_graphql(query: str, variables: dict | None = None) -> dict:
     }
 
     r = requests.post(url, json={"query": query, "variables": variables or {}}, headers=headers, timeout=60)
-    r.raise_for_status()
+    
+    if not r.ok:
+        raise RuntimeError(f"Shopify API error {r.status_code}: {r.text}")
+    
     payload = r.json()
 
     if payload.get("errors"):
