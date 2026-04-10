@@ -85,7 +85,7 @@ def fetch_orders_with_lineitems(
 
     # Shopify order search query syntax
     # Examples: created_at:>=2026-03-01 created_at:<=2026-03-31 financial_status:paid
-    q = f"created_at:>={start_dt.date().isoformat()} created_at:<={end_dt.date().isoformat()} financial_status:{financial_status}"
+    q = f"created_at:>={start_dt.date().isoformat()} created_at:<={end_dt.date().isoformat()} financial_status:{financial_status} -status:cancelled"
 
     all_nodes: List[Dict[str, Any]] = []
     after: Optional[str] = None

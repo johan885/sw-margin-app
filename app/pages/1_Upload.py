@@ -76,7 +76,7 @@ if mode == "Fetch from Shopify API":
 
         # 1) Load costs workbook
         with st.spinner("Loading cost workbook…"):
-            costs = load_costs_workbook(costs_file.getvalue())
+            costs = load_costs_workbook(costs_file)
 
         # 2) Fetch orders from Shopify
         with st.spinner("Fetching orders from Shopify…"):
