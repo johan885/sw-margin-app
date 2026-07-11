@@ -1,5 +1,5 @@
-streamlit
-pandas
-openpyxl
-python-dateutil
-requests
+streamlit==1.58.0
+pandas==2.3.3
+openpyxl==3.1.5
+python-dateutil==2.9.0.post0
+requests==2.33.1
